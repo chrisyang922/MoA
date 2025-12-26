@@ -367,7 +367,7 @@ def _mean_pool(last_hidden_state, attention_mask):
     return summed / counts
 
 
-def _encode_contriver(texts: List[str]):
+def _encode_contriver(texts):
     model, tok, device = _get_contriver()
     batch = tok(texts, padding=True, truncation=True, return_tensors="pt").to(device)
     with torch.no_grad():
@@ -377,7 +377,7 @@ def _encode_contriver(texts: List[str]):
     return emb
 
 
-def retrieve_top_k_with_contriver(corpus: List[str], query: str, k: int) -> List[int]:
+def retrieve_top_k_with_contriver(corpus, query, k):
     q_emb = _encode_contriver([query])
     c_emb = _encode_contriver(corpus)
     scores = (q_emb @ c_emb.T).squeeze(0)
@@ -398,6 +398,7 @@ def retrieve_top_k_with_contriver(corpus: List[str], query: str, k: int) -> List
         torch.cuda.empty_cache()
     gc.collect()
     return topk
+
 
 
 def pick_device_and_dtype():
